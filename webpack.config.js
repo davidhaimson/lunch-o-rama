@@ -7,6 +7,7 @@ module.exports = {
     app: './src/app',
     test: './src/test'
   },
+  devtool: 'source-map',
   output: {
     path: require('path').resolve('build'),
     filename: '[name].js'
