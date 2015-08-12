@@ -2,7 +2,7 @@
 { Status } = require '../constants'
 
 cx = require 'classnames'
-{ div, span, ul, li, a, i, p } = React.DOM
+{ div, span, ul, li, a, i, p, strong } = React.DOM
 
 select = (state) ->
   filteredPlaces: state.search.filteredPlaces
@@ -10,6 +10,7 @@ select = (state) ->
   places = _.map state.search.filteredPlaces, (name) ->
     state.places.placesByName[name]
 
+  searchTags: state.search.searchTags
   searchStatus: state.search.status
   places: places
 
@@ -26,6 +27,15 @@ PlacesList = (connect select) React.createClass
         ,
           i className: 'material-icons circle green', 'check' if selected
           span className: 'title', place.name
-          p null, place.tags.join ' - '
+          p null,
+            for tag, index in place.tags
+              contents = []
+              if index
+                contents.push ' - '
+              if _.contains @props.searchTags, tag
+                contents.push strong null, tag
+              else
+                contents.push tag
+              contents
 
 module.exports = PlacesList

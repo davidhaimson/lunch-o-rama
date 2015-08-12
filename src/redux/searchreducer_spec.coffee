@@ -30,3 +30,12 @@ describe 'Search Reducer', ->
       payload: { tag: 'second', placeInfo: [] }
 
     (expect state.searchTags).to.deep.equal [ 'first' ]
+
+  it 'should filter places by tags and by search text, case-insensitively', ->
+    state = searchReducer searchTags: [ 'first', 'second' ],
+      type: Actions.SEARCH_PLACES
+      payload:
+        searchText: 'f'
+        placeInfo: [ { name: 'First Place', tags: [ 'second' ] }, { name: 'Second Place', tags: [ 'first' ] } ]
+
+    (expect state.filteredPlaces).to.deep.equal [ 'First Place' ]

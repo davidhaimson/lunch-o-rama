@@ -44,7 +44,7 @@ handlers =
 
       status: Status.IDLE
       searchTags: searchTags
-      filteredPlaces: searchPlaces payload.placeInfo, searchTags
+      filteredPlaces: searchPlaces payload.placeInfo, searchTags, state.searchText
 
   "#{Actions.REMOVE_TAG}": (state, action) ->
     { payload } = action
@@ -53,7 +53,7 @@ handlers =
 
       status: Status.IDLE
       searchTags: searchTags
-      filteredPlaces: searchPlaces payload.placeInfo, searchTags
+      filteredPlaces: searchPlaces payload.placeInfo, searchTags, state.searchText
 
   "#{Actions.SELECT_PLACE}": (state, action) ->
     if action.meta?.promise
