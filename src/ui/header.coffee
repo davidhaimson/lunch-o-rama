@@ -1,7 +1,7 @@
 { connect } = require 'react-redux'
 { Status } = require '../constants'
 
-{ nav, div, ul, li, a, i } = React.DOM
+{ nav, div, ul, li, a, i, input } = React.DOM
 
 select = (state) ->
   status: state.search.status
@@ -22,8 +22,11 @@ Header = (connect select) React.createClass
               Spinner null
           else
             li null,
-              a href: '#', onClick: @context.api.selectPlace,
+              a href: '#', onClick: @context.api.selectPlace, title: 'Choose',
                 i className: 'material-icons', 'local_dining'
+          li null,
+            input type: 'text', style: { margin: '0' }, name: 'query', onChange: (event) =>
+              @context.api.applySearch event.target.value
 
 Spinner = React.createFactory React.createClass
   displayName: 'Spinner'

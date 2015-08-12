@@ -6,15 +6,16 @@ initialState = ->
   filteredPlaces: []
   searchTags: []
 
-searchPlacesByTags = (placeInfo, tags) ->
-  if _.isEmpty tags
-    _.pluck placeInfo, 'name'
-  else
-    (_ placeInfo)
-      .filter (test) ->
-        (_.intersection tags, test.tags).length
-      .pluck 'name'
-      .value()
+searchPlaces = (placeInfo, tags, searchText) ->
+  _placeInfo = _ placeInfo
+  unless _.isEmpty tags
+    _placeInfo = _placeInfo.filter (place) ->
+      (_.intersection tags, place.tags).length
+  if searchText
+    _placeInfo = _placeInfo.filter (place) ->
+      (place.name.toLowerCase().indexOf searchText.toLowerCase()) == 0
+  _placeInfo.pluck 'name'
+    .value()
 
 shuffle = (array) ->
   currentIndex = array.length
@@ -34,7 +35,7 @@ handlers =
   "#{Actions.SEARCH_PLACES}": (state, action) ->
     { payload } = action
     searchText: payload.searchText or ''
-    filteredPlaces: searchPlacesByTags payload.placeInfo, state.searchTags
+    filteredPlaces: searchPlaces payload.placeInfo, state.searchTags, payload.searchText
 
   "#{Actions.ADD_TAG}": (state, action) ->
     { payload } = action
@@ -43,7 +44,7 @@ handlers =
 
       status: Status.IDLE
       searchTags: searchTags
-      filteredPlaces: searchPlacesByTags payload.placeInfo, searchTags
+      filteredPlaces: searchPlaces payload.placeInfo, searchTags
 
   "#{Actions.REMOVE_TAG}": (state, action) ->
     { payload } = action
@@ -52,7 +53,7 @@ handlers =
 
       status: Status.IDLE
       searchTags: searchTags
-      filteredPlaces: searchPlacesByTags payload.placeInfo, searchTags
+      filteredPlaces: searchPlaces payload.placeInfo, searchTags
 
   "#{Actions.SELECT_PLACE}": (state, action) ->
     if action.meta?.promise
