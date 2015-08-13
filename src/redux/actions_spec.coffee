@@ -1,5 +1,5 @@
 { createStore } = require 'redux'
-{ Actions } = require '../constants'
+{ Actions, Status } = require '../constants'
 
 actions = require './actions'
 middleware = require './middleware'
@@ -20,6 +20,7 @@ describe 'Actions', ->
 
   it 'should dispatch actions to add search tags with the current place info', ->
     state =
+      search: { status: Status.IDLE }
       places: { placeInfo: [ 'First', 'Second' ] }
     store = testStore state
 
@@ -33,6 +34,7 @@ describe 'Actions', ->
 
   it 'should dispatch actions to remove search tags with the current place info', ->
     state =
+      search: { status: Status.IDLE }
       places: { placeInfo: [ 'First', 'Second' ] }
     store = testStore state
 

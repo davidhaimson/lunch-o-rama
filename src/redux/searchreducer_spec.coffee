@@ -31,11 +31,51 @@ describe 'Search Reducer', ->
 
     (expect state.searchTags).to.deep.equal [ 'first' ]
 
-  it 'should filter places by tags and by search text, case-insensitively', ->
+  it 'should filter places by nothing, if no tags and no search text', ->
+    placeInfo = [
+      { name: 'First Place', tags: [ 'second' ] }
+      { name: 'Second Place', tags: [ 'first' ] }
+    ]
+    state = searchReducer searchTags: [],
+      type: Actions.SEARCH_PLACES
+      payload:
+        searchText: ''
+        placeInfo: placeInfo
+
+    (expect state.filteredPlaces.length).to.equal placeInfo.length
+
+  it 'should filter places by tags', ->
+    state = searchReducer searchTags: [ 'first' ],
+      type: Actions.SEARCH_PLACES
+      payload:
+        placeInfo: [
+          { name: 'First Place', tags: [ 'second' ] }
+          { name: 'Second Place', tags: [ 'first' ] }
+        ]
+
+    (expect state.filteredPlaces).to.deep.equal [ 'Second Place' ]
+
+  it 'should filter places by search text, case-insensitively', ->
+    state = searchReducer searchTags: [],
+      type: Actions.SEARCH_PLACES
+      payload:
+        searchText: 'f'
+        placeInfo: [
+          { name: 'First Place', tags: [ 'second' ] }
+          { name: 'Second Place', tags: [ 'first' ] }
+        ]
+
+    (expect state.filteredPlaces).to.deep.equal [ 'First Place' ]
+
+  it 'should filter places both by tags and by search text, case-insensitively', ->
     state = searchReducer searchTags: [ 'first', 'second' ],
       type: Actions.SEARCH_PLACES
       payload:
         searchText: 'f'
-        placeInfo: [ { name: 'First Place', tags: [ 'second' ] }, { name: 'Second Place', tags: [ 'first' ] } ]
+        placeInfo: [
+          { name: 'First Place', tags: [ 'second' ] }
+          { name: 'Second Place', tags: [ 'third' ] }
+          { name: 'Fourth Place', tags: [ 'first' ] }
+        ]
 
-    (expect state.filteredPlaces).to.deep.equal [ 'First Place' ]
+    (expect state.filteredPlaces).to.deep.equal [ 'First Place', 'Fourth Place' ]
