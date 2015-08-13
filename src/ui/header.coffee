@@ -3,7 +3,7 @@
 
 { nav, div, ul, li, a, i, input } = React.DOM
 
-select = (state) ->
+select = (state) ->  
   status: state.search.status
 
 Header = (connect select) React.createClass
@@ -18,15 +18,21 @@ Header = (connect select) React.createClass
         a className: 'brand-logo', 'Lunch-O-Rama'
         ul className: 'right',
           if @props.status is Status.SPINNING
-            li style: { margin: '15px' },
+            li style: { marginTop: '12px', height: '40px' },
               Spinner null
           else
             li null,
               a href: '#', onClick: @context.api.selectPlace, title: 'Choose',
                 i className: 'material-icons', 'local_dining'
           li null,
-            input type: 'text', style: { margin: '0' }, name: 'query', onChange: (event) =>
-              @context.api.applySearch event.target.value
+            input
+              type: 'text'
+              style: { margin: '0' }
+              name: 'query'
+              readOnly: @props.status is Status.SPINNING
+              placeholder: 'Search'
+              onChange: (event) =>
+                @context.api.applySearch event.target.value
 
 Spinner = React.createFactory React.createClass
   displayName: 'Spinner'

@@ -1,4 +1,4 @@
-{ Actions } = require '../constants'
+{ Actions, Status } = require '../constants'
 
 module.exports =
 
@@ -16,26 +16,28 @@ module.exports =
   # todo - implement narrowing the places listed by the search text
   applySearch: (searchText) ->
     (dispatch, getState) ->
-      { placeInfo } = getState().places
-      dispatch
-        type: Actions.SEARCH_PLACES
-        payload: { searchText, placeInfo }
+        { placeInfo } = getState().places
+        dispatch
+          type: Actions.SEARCH_PLACES
+          payload: { searchText, placeInfo }
 
   # add a tag to the search criteria and update the places that match
   addSearchTag: (tag) ->
     (dispatch, getState) ->
       { placeInfo } = getState().places
-      dispatch
-        type: Actions.ADD_TAG
-        payload: { tag, placeInfo }
+      unless getState().search.status is Status.SPINNING
+        dispatch
+          type: Actions.ADD_TAG
+          payload: { tag, placeInfo }
 
   # remove a tag to the search criteria and update the places that match
   removeSearchTag: (tag) ->
     (dispatch, getState) ->
       { placeInfo } = getState().places
-      dispatch
-        type: Actions.REMOVE_TAG
-        payload: { tag, placeInfo }
+      unless getState().search.status is Status.SPINNING
+        dispatch
+          type: Actions.REMOVE_TAG
+          payload: { tag, placeInfo }
 
   # trigger the behavior to select a place to eat randomly. first this
   # randomizes the current list of places that match the search details,
